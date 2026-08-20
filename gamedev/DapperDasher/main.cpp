@@ -5,56 +5,68 @@ struct Config {
   static const int h_height{50}, h_width{50};
   constexpr static const float h_init_pos_x{window_width / 2},
       h_init_pos_y{window_height - 50};
-  static const int jump_height{200};
-  static const int gravity{1};
+  // pixels per second per second
+  static const int gravity{1000};
+  // pixels per second
+  constexpr static const float jump_velocity{-600.0f};
   int velocity{0};
 };
 Config config;
+
+struct Scarfy {
+  Texture2D scarfy_texture = LoadTexture("textures/scarfy.png");
+  Rectangle scarfy_rec = {0, 0, float(scarfy_texture.width / 6),
+                          float(scarfy_texture.height)};
+  Vector2 scarfy_pos = {float(Config::window_width / 2 - scarfy_rec.width / 2),
+                        float(Config::window_height - scarfy_rec.height)};
+};
 
 void DrawWindow() {
   InitWindow(config.window_width, config.window_height, "Dapper Dasher");
   SetTargetFPS(60);
 }
 
-bool IsTouchingTheGround(Rectangle *hero) {
-  if (hero->y >= Config::h_init_pos_y) {
+bool IsTouchingTheGround(Scarfy *hero) {
+  if (hero->scarfy_pos.y >= Config::window_height - hero->scarfy_rec.height) {
     return true;
   }
 
   return false;
 }
 
-void ControlHero(Rectangle *hero) {
+void ControlHero(Scarfy *hero, float delta_time) {
 
   if (IsTouchingTheGround(hero)) {
     config.velocity = 0.0f;
   } else {
-    config.velocity = config.velocity + config.gravity;
+    config.velocity += config.gravity * delta_time;
   }
 
   if (IsKeyDown(KEY_SPACE) && IsTouchingTheGround(hero)) {
-    config.velocity = -15.0f;
+    config.velocity = config.jump_velocity;
   }
 
-  hero->y += config.velocity;
+  hero->scarfy_pos.y += config.velocity * delta_time;
 }
 
 void GameLoop() {
-  Rectangle hero =
-      (Rectangle){Config::h_init_pos_x, Config::h_init_pos_y, 50, 50};
+  Scarfy scarfy;
 
   while (!WindowShouldClose()) {
+    float dt = GetFrameTime();
     // Start Drawing
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    ControlHero(&hero);
+    ControlHero(&scarfy, dt);
 
-    DrawRectangleRec(hero, RED);
+    DrawTextureRec(scarfy.scarfy_texture, scarfy.scarfy_rec, scarfy.scarfy_pos,
+                   WHITE);
     // Stop Drawing
     EndDrawing();
   }
   CloseWindow();
+  UnloadTexture(scarfy.scarfy_texture);
 }
 
 int main(void) {
