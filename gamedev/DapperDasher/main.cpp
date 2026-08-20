@@ -6,6 +6,7 @@ struct Config {
   constexpr static const float h_init_pos_x{window_width / 2},
       h_init_pos_y{window_height - 50};
   static const int jump_height{200};
+  static const int gravity{1};
   int velocity{0};
 };
 Config config;
@@ -16,7 +17,7 @@ void DrawWindow() {
 }
 
 bool IsTouchingTheGround(Rectangle *hero) {
-  if (hero->y >= Config::window_height - hero->height) {
+  if (hero->y >= Config::h_init_pos_y) {
     return true;
   }
 
@@ -24,19 +25,18 @@ bool IsTouchingTheGround(Rectangle *hero) {
 }
 
 void ControlHero(Rectangle *hero) {
-  hero->y -= config.velocity;
 
-  if (hero->y < Config::window_height - Config::jump_height) {
-    config.velocity = -config.velocity;
-  }
-
-  if (hero->y > config.window_height - 50.0f) {
+  if (IsTouchingTheGround(hero)) {
     config.velocity = 0.0f;
-    hero->y = config.window_height - 50.0f;
+  } else {
+    config.velocity = config.velocity + config.gravity;
   }
+
   if (IsKeyDown(KEY_SPACE) && IsTouchingTheGround(hero)) {
-    config.velocity = 10.0f;
+    config.velocity = -15.0f;
   }
+
+  hero->y += config.velocity;
 }
 
 void GameLoop() {
