@@ -1,0 +1,18 @@
+[
+  {
+    "file": "./gamedev/AxeGame/main.cpp",
+    "arguments": [
+      "gcc",
+      "./gamedev/AxeGame/main.cpp",
+      "-o",
+      "main",
+      "-I/opt/homebrew/opt/raylib/include",
+      "-framework",
+      "-framework",
+      "-framework",
+      "-framework"
+    ],
+    "directory": "/Users/pdorgiakis/Documents/cpp",
+    "output": "main"
+  }
+]
