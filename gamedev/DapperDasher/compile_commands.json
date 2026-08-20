@@ -1,0 +1,18 @@
+[
+  {
+    "file": "./main.cpp",
+    "arguments": [
+      "gcc",
+      "./main.cpp",
+      "-o",
+      "main",
+      "-I/opt/homebrew/opt/raylib/include",
+      "-framework",
+      "-framework",
+      "-framework",
+      "-framework"
+    ],
+    "directory": "/Users/pdorgiakis/Documents/cpp/gamedev/DapperDasher",
+    "output": "main"
+  }
+]
