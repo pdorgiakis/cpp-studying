@@ -15,10 +15,20 @@ Config config;
 
 struct Scarfy {
   Texture2D scarfy_texture = LoadTexture("textures/scarfy.png");
-  Rectangle scarfy_rec = {0, 0, float(scarfy_texture.width / 6),
+  int frame{0};
+  const int max_frames{6};
+  Rectangle scarfy_rec = {0, 0, float(scarfy_texture.width / max_frames),
                           float(scarfy_texture.height)};
   Vector2 scarfy_pos = {float(Config::window_width / 2 - scarfy_rec.width / 2),
                         float(Config::window_height - scarfy_rec.height)};
+
+  void next_frame() {
+    scarfy_rec.x = frame * scarfy_rec.width;
+    frame++;
+    if (frame >= max_frames) {
+      frame = 0;
+    }
+  }
 };
 
 void DrawWindow() {
@@ -51,6 +61,10 @@ void ControlHero(Scarfy *hero, float delta_time) {
 
 void GameLoop() {
   Scarfy scarfy;
+  int scarfy_frame = 1;
+
+  float update_time = 1.0f / 12.0f;
+  float running_time{0.0f};
 
   while (!WindowShouldClose()) {
     float dt = GetFrameTime();
@@ -62,6 +76,14 @@ void GameLoop() {
 
     DrawTextureRec(scarfy.scarfy_texture, scarfy.scarfy_rec, scarfy.scarfy_pos,
                    WHITE);
+    running_time += dt;
+    if (IsTouchingTheGround(&scarfy)) {
+      if (running_time >= update_time) {
+        scarfy.next_frame();
+        running_time = 0.0f;
+      }
+    }
+
     // Stop Drawing
     EndDrawing();
   }
