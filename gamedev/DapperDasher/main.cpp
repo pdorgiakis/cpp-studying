@@ -3,13 +3,9 @@
 
 struct Config {
   static const int window_width{800}, window_height{450};
-  static const int h_height{50}, h_width{50};
-  constexpr static const float h_init_pos_x{window_width / 2},
-      h_init_pos_y{window_height - 50};
   // pixels per second per second
   static const int gravity{1000};
   // pixels per second
-
   static const int scarfy_jump_velocity{-500};
 };
 
