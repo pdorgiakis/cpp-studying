@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include <iostream>
 
 struct Config {
   static const int window_width{800}, window_height{450};
@@ -8,10 +9,9 @@ struct Config {
   // pixels per second per second
   static const int gravity{1000};
   // pixels per second
-  constexpr static const float jump_velocity{-600.0f};
-  int velocity{0};
+
+  static const int ground{window_height - 50};
 };
-Config config;
 
 struct Scarfy {
   Texture2D scarfy_texture = LoadTexture("textures/scarfy.png");
@@ -20,7 +20,9 @@ struct Scarfy {
   Rectangle scarfy_rec = {0, 0, float(scarfy_texture.width / max_frames),
                           float(scarfy_texture.height)};
   Vector2 scarfy_pos = {float(Config::window_width / 2 - scarfy_rec.width / 2),
-                        float(Config::window_height - scarfy_rec.height)};
+                        float(Config::ground - scarfy_rec.height)};
+  int velocity{0};
+  constexpr static const float jump_velocity{-500.0f};
 
   void next_frame() {
     scarfy_rec.x = frame * scarfy_rec.width;
@@ -31,13 +33,34 @@ struct Scarfy {
   }
 };
 
+struct Enemy {
+  Texture2D enemy_texture = LoadTexture("textures/Creature_16x16.png");
+  int frame{0};
+  const int max_frames{4};
+  const int initial_frame_pos{64};
+  Rectangle enemy_rec = {64, 128, 16.0f, 16.0f};
+  Rectangle enemy_resize_rec = {Config::window_width, Config::ground,
+                                enemy_rec.width * 5.0f,
+                                enemy_rec.height * 5.0f};
+  Vector2 enemy_pos = {enemy_resize_rec.width, enemy_resize_rec.height};
+  int velocity{-300};
+
+  void next_frame() {
+    enemy_rec.x = initial_frame_pos + frame * enemy_rec.width;
+    frame++;
+    if (frame >= max_frames) {
+      frame = 0;
+    }
+  }
+};
+
 void DrawWindow() {
-  InitWindow(config.window_width, config.window_height, "Dapper Dasher");
+  InitWindow(Config::window_width, Config::window_height, "Dapper Dasher");
   SetTargetFPS(60);
 }
 
 bool IsTouchingTheGround(Scarfy *hero) {
-  if (hero->scarfy_pos.y >= Config::window_height - hero->scarfy_rec.height) {
+  if (hero->scarfy_pos.y >= Config::ground - hero->scarfy_rec.height) {
     return true;
   }
 
@@ -47,23 +70,31 @@ bool IsTouchingTheGround(Scarfy *hero) {
 void ControlHero(Scarfy *hero, float delta_time) {
 
   if (IsTouchingTheGround(hero)) {
-    config.velocity = 0.0f;
+    hero->velocity = 0.0f;
   } else {
-    config.velocity += config.gravity * delta_time;
+    hero->velocity += Config::gravity * delta_time;
   }
 
   if (IsKeyDown(KEY_SPACE) && IsTouchingTheGround(hero)) {
-    config.velocity = config.jump_velocity;
+    hero->velocity = hero->jump_velocity;
   }
 
-  hero->scarfy_pos.y += config.velocity * delta_time;
+  hero->scarfy_pos.y += hero->velocity * delta_time;
+}
+
+void MoveEnemy(Enemy *enemy, float delta_time) {
+  if (enemy->enemy_resize_rec.x < 0) {
+    enemy->enemy_resize_rec.x = Config::window_width;
+  }
+  enemy->enemy_resize_rec.x += enemy->velocity * delta_time;
 }
 
 void GameLoop() {
   Scarfy scarfy;
+  Enemy enemy;
   int scarfy_frame = 1;
 
-  float update_time = 1.0f / 12.0f;
+  float update_time = 1.0f / 5.0f;
   float running_time{0.0f};
 
   while (!WindowShouldClose()) {
@@ -72,16 +103,30 @@ void GameLoop() {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
+    // Handle Objects movement
     ControlHero(&scarfy, dt);
+    MoveEnemy(&enemy, dt);
 
+    // Draw Textures
     DrawTextureRec(scarfy.scarfy_texture, scarfy.scarfy_rec, scarfy.scarfy_pos,
                    WHITE);
+    DrawTexturePro(enemy.enemy_texture, enemy.enemy_rec, enemy.enemy_resize_rec,
+                   enemy.enemy_pos, 0.0f, WHITE);
+
+    if (CheckCollisionRecs(scarfy.scarfy_rec, enemy.enemy_rec)) {
+      DrawText("You hit the axe!", 400, 200, 20, RED);
+    }
+
     running_time += dt;
-    if (IsTouchingTheGround(&scarfy)) {
-      if (running_time >= update_time) {
+
+    // Animate
+    if (running_time >= update_time) {
+      if (IsTouchingTheGround(&scarfy)) {
         scarfy.next_frame();
-        running_time = 0.0f;
       }
+      enemy.next_frame();
+
+      running_time = 0.0f;
     }
 
     // Stop Drawing
