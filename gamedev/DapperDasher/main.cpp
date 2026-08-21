@@ -53,7 +53,7 @@ AnimData InitializeScarfy() {
   return data;
 }
 
-AnimData InitializeEnemy() {
+AnimData InitializeEnemy(int x_offset) {
   AnimData data;
   data.texture = LoadTexture("textures/12_nebula_spritesheet.png");
   data.max_frames = 8;
@@ -61,7 +61,7 @@ AnimData InitializeEnemy() {
   data.rec.y = data.initial_frame_pos.y;
   data.rec.width = data.texture.width / data.max_frames;
   data.rec.height = data.texture.height / 8;
-  data.pos.x = Config::window_width;
+  data.pos.x = Config::window_width + x_offset;
   data.pos.y = Config::window_height - data.rec.height;
   data.update_time = 1.0f / 30.0f;
   data.velocity = -300;
@@ -98,7 +98,7 @@ void ControlHero(AnimData *hero, float delta_time) {
 }
 
 void MoveEnemy(AnimData *enemy, float delta_time) {
-  if (enemy->pos.x < 0) {
+  if (enemy->pos.x < -enemy->rec.width) {
     enemy->pos.x = Config::window_width;
   }
   enemy->pos.x += enemy->velocity * delta_time;
@@ -106,7 +106,8 @@ void MoveEnemy(AnimData *enemy, float delta_time) {
 
 void GameLoop() {
   AnimData scarfy = InitializeScarfy();
-  AnimData enemy = InitializeEnemy();
+  AnimData enemy = InitializeEnemy(0);
+  AnimData enemy2 = InitializeEnemy(300);
 
   while (!WindowShouldClose()) {
     float dt = GetFrameTime();
@@ -117,19 +118,24 @@ void GameLoop() {
     // Handle Objects movement
     ControlHero(&scarfy, dt);
     MoveEnemy(&enemy, dt);
+    MoveEnemy(&enemy2, dt);
 
     // Draw Textures
     scarfy.draw();
     enemy.draw();
+    enemy2.draw();
 
+    // Update Times
     scarfy.running_time += dt;
     enemy.running_time += dt;
+    enemy2.running_time += dt;
 
     // Animate
     if (IsTouchingTheGround(&scarfy)) {
       scarfy.next_frame();
     }
     enemy.next_frame();
+    enemy2.next_frame();
 
     // Stop Drawing
     EndDrawing();
