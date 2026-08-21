@@ -2,7 +2,7 @@
   {
     "file": "./main.cpp",
     "arguments": [
-      "gcc",
+      "g++",
       "./main.cpp",
       "-o",
       "main",
