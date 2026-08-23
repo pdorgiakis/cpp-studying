@@ -1,0 +1,18 @@
+[
+  {
+    "file": "./main.cpp",
+    "arguments": [
+      "g++",
+      "./main.cpp",
+      "-o",
+      "main",
+      "-I/opt/homebrew/opt/raylib/include",
+      "-framework",
+      "-framework",
+      "-framework",
+      "-framework"
+    ],
+    "directory": "/Users/pdorgiakis/Documents/cpp/gamedev/ClassyClash",
+    "output": "main"
+  }
+]
