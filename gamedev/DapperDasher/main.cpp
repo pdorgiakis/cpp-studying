@@ -2,7 +2,7 @@
 #include <iostream>
 
 struct Config {
-  static const int window_width{800}, window_height{450};
+  static const int window_width{512}, window_height{380};
   // pixels per second per second
   static const int gravity{1000};
   // pixels per second
@@ -19,6 +19,7 @@ struct AnimData {
   int velocity{0};
   float update_time;
   float running_time{0.0f};
+  float scale{1.0f};
 
   void next_frame() {
     if (update_time > running_time) {
@@ -65,6 +66,64 @@ AnimData InitializeEnemy(int x_offset) {
   return data;
 }
 
+AnimData InitializeFirstLevelBackground(int x_offset = 0) {
+  AnimData data;
+  data.texture = LoadTexture("textures/foreground.png");
+  data.rec.x = 0;
+  data.rec.y = 0;
+  data.scale = 2.0f;
+  data.rec.width = data.texture.width * data.scale;
+  data.rec.height = data.texture.height * data.scale;
+  data.pos.x = x_offset;
+  data.pos.y = Config::window_height - data.rec.height;
+  data.velocity = -300;
+
+  return data;
+}
+
+AnimData InitializeSecondLevelBackground(int x_offset = 0) {
+  AnimData data;
+  data.texture = LoadTexture("textures/back-buildings.png");
+  data.rec.x = 0;
+  data.rec.y = 0;
+  data.scale = 2.0f;
+  data.rec.width = data.texture.width * data.scale;
+  data.rec.height = data.texture.height * data.scale;
+  data.pos.x = x_offset;
+  data.pos.y = Config::window_height - data.rec.height;
+  data.velocity = -100;
+
+  return data;
+}
+
+AnimData InitializeThirdLevelBackground(int x_offset = 0) {
+  AnimData data;
+  data.texture = LoadTexture("textures/far-buildings.png");
+  data.rec.x = 0;
+  data.rec.y = 0;
+  data.scale = 2.0f;
+  data.rec.width = data.texture.width * data.scale;
+  data.rec.height = data.texture.height * data.scale;
+  data.pos.x = x_offset;
+  data.pos.y = Config::window_height - data.rec.height;
+  data.velocity = -30;
+
+  return data;
+}
+
+void AnimateBackground(AnimData *data, float delta_time) {
+  data->pos.x += data->velocity * delta_time;
+  if (data->pos.x <= -data->rec.width) {
+    data->pos.x = data->rec.width - 10;
+  }
+}
+
+void DrawBgs(AnimData bgs[2]) {
+  for (int i = 0; i < 2; i++) {
+    DrawTextureEx(bgs[i].texture, bgs[i].pos, 0.0f, bgs[i].scale, WHITE);
+  }
+}
+
 void DrawWindow() {
   InitWindow(Config::window_width, Config::window_height, "Dapper Dasher");
   SetTargetFPS(60);
@@ -104,6 +163,20 @@ void GameLoop() {
   AnimData scarfy = InitializeScarfy();
   AnimData enemy = InitializeEnemy(0);
   AnimData enemy2 = InitializeEnemy(300);
+  AnimData first_level_background[3];
+  first_level_background[0] = InitializeFirstLevelBackground();
+  first_level_background[1] =
+      InitializeFirstLevelBackground(first_level_background[0].rec.width);
+
+  AnimData second_level_background[3];
+  second_level_background[0] = InitializeSecondLevelBackground();
+  second_level_background[1] =
+      InitializeSecondLevelBackground(second_level_background[0].rec.width);
+
+  AnimData third_level_background[3];
+  third_level_background[0] = InitializeThirdLevelBackground();
+  third_level_background[1] =
+      InitializeThirdLevelBackground(third_level_background[0].rec.width);
 
   while (!WindowShouldClose()) {
     float dt = GetFrameTime();
@@ -115,8 +188,20 @@ void GameLoop() {
     ControlHero(&scarfy, dt);
     MoveEnemy(&enemy, dt);
     MoveEnemy(&enemy2, dt);
+    for (int bg = 0; bg < 2; bg++) {
+      AnimateBackground(&first_level_background[bg], dt);
+    }
+    for (int bg = 0; bg < 2; bg++) {
+      AnimateBackground(&second_level_background[bg], dt);
+    }
+    for (int bg = 0; bg < 2; bg++) {
+      AnimateBackground(&third_level_background[bg], dt);
+    }
 
     // Draw Textures
+    DrawBgs(third_level_background);
+    DrawBgs(second_level_background);
+    DrawBgs(first_level_background);
     scarfy.draw();
     enemy.draw();
     enemy2.draw();
@@ -138,6 +223,9 @@ void GameLoop() {
   }
   CloseWindow();
   UnloadTexture(scarfy.texture);
+  for (int bg = 0; bg < 2; bg++) {
+    UnloadTexture(first_level_background[bg].texture);
+  }
 }
 
 int main(void) {
