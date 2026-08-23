@@ -226,7 +226,6 @@ void GameLoop() {
     DrawBgs(middlegrounds);
     DrawBgs(foregrounds);
     if (!collided) {
-      DrawRectangleRec(scarfy_rec, RED);
       scarfy.draw();
       for (int i = 0; i < Config::max_enemies; i++) {
         // DrawRectangle(enemies[i].pos.x, enemies[i].pos.y,
