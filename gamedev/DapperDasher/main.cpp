@@ -66,7 +66,7 @@ AnimData InitializeEnemy(int x_offset) {
   return data;
 }
 
-AnimData InitializeFirstLevelBackground(int x_offset = 0) {
+AnimData InitializeForeground(int x_offset = 0) {
   AnimData data;
   data.texture = LoadTexture("textures/foreground.png");
   data.rec.x = 0;
@@ -81,7 +81,7 @@ AnimData InitializeFirstLevelBackground(int x_offset = 0) {
   return data;
 }
 
-AnimData InitializeSecondLevelBackground(int x_offset = 0) {
+AnimData InitializedMiddleGround(int x_offset = 0) {
   AnimData data;
   data.texture = LoadTexture("textures/back-buildings.png");
   data.rec.x = 0;
@@ -96,7 +96,7 @@ AnimData InitializeSecondLevelBackground(int x_offset = 0) {
   return data;
 }
 
-AnimData InitializeThirdLevelBackground(int x_offset = 0) {
+AnimData InitializeBackground(int x_offset = 0) {
   AnimData data;
   data.texture = LoadTexture("textures/far-buildings.png");
   data.rec.x = 0;
@@ -166,20 +166,17 @@ void GameLoop() {
   enemies[1] = InitializeEnemy(200);
   enemies[2] = InitializeEnemy(500);
 
-  AnimData first_level_background[3];
-  first_level_background[0] = InitializeFirstLevelBackground();
-  first_level_background[1] =
-      InitializeFirstLevelBackground(first_level_background[0].rec.width);
+  AnimData foregrounds[2];
+  foregrounds[0] = InitializeForeground();
+  foregrounds[1] = InitializeForeground(foregrounds[0].rec.width);
 
-  AnimData second_level_background[3];
-  second_level_background[0] = InitializeSecondLevelBackground();
-  second_level_background[1] =
-      InitializeSecondLevelBackground(second_level_background[0].rec.width);
+  AnimData middlegrounds[2];
+  middlegrounds[0] = InitializedMiddleGround();
+  middlegrounds[1] = InitializedMiddleGround(middlegrounds[0].rec.width);
 
-  AnimData third_level_background[3];
-  third_level_background[0] = InitializeThirdLevelBackground();
-  third_level_background[1] =
-      InitializeThirdLevelBackground(third_level_background[0].rec.width);
+  AnimData backgrounds[2];
+  backgrounds[0] = InitializeBackground();
+  backgrounds[1] = InitializeBackground(backgrounds[0].rec.width);
 
   while (!WindowShouldClose()) {
     float dt = GetFrameTime();
@@ -193,19 +190,19 @@ void GameLoop() {
       MoveEnemy(&enemies[i], dt);
     }
     for (int bg = 0; bg < 2; bg++) {
-      AnimateBackground(&first_level_background[bg], dt);
+      AnimateBackground(&foregrounds[bg], dt);
     }
     for (int bg = 0; bg < 2; bg++) {
-      AnimateBackground(&second_level_background[bg], dt);
+      AnimateBackground(&middlegrounds[bg], dt);
     }
     for (int bg = 0; bg < 2; bg++) {
-      AnimateBackground(&third_level_background[bg], dt);
+      AnimateBackground(&backgrounds[bg], dt);
     }
 
     // Draw Textures
-    DrawBgs(third_level_background);
-    DrawBgs(second_level_background);
-    DrawBgs(first_level_background);
+    DrawBgs(backgrounds);
+    DrawBgs(middlegrounds);
+    DrawBgs(foregrounds);
     scarfy.draw();
     for (int i = 0; i < 3; i++) {
       enemies[i].draw();
@@ -236,7 +233,7 @@ void GameLoop() {
     UnloadTexture(enemies[i].texture);
   }
   for (int bg = 0; bg < 2; bg++) {
-    UnloadTexture(first_level_background[bg].texture);
+    UnloadTexture(foregrounds[bg].texture);
   }
 }
 
