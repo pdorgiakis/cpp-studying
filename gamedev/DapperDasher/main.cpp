@@ -7,6 +7,7 @@ struct Config {
   static const int gravity{1200};
   // pixels per second
   static const int scarfy_jump_velocity{-600};
+  static const int max_enemies{3};
 };
 
 struct AnimData {
@@ -152,19 +153,20 @@ void ControlHero(AnimData *hero, float delta_time) {
   hero->pos.y += hero->velocity * delta_time;
 }
 
-void MoveEnemy(AnimData *enemy, float delta_time) {
-  if (enemy->pos.x < -enemy->rec.width) {
-    enemy->pos.x = Config::window_width;
-  }
+void MoveObject(AnimData *enemy, float delta_time) {
   enemy->pos.x += enemy->velocity * delta_time;
 }
 
 void GameLoop() {
   AnimData scarfy = InitializeScarfy();
-  AnimData enemies[3];
-  enemies[0] = InitializeEnemy(0);
-  enemies[1] = InitializeEnemy(200);
-  enemies[2] = InitializeEnemy(500);
+  AnimData enemies[Config::max_enemies];
+  for (int n = 0; n < Config::max_enemies; n++) {
+    enemies[n] = InitializeEnemy(Config::window_width + n * 500);
+  }
+
+  float finish_line{enemies[Config::max_enemies - 1].pos.x};
+  std::cout << finish_line << std::endl;
+  bool collided = false;
 
   AnimData foregrounds[2];
   foregrounds[0] = InitializeForeground();
@@ -185,32 +187,72 @@ void GameLoop() {
     ClearBackground(RAYWHITE);
 
     // Handle Objects movement
-    ControlHero(&scarfy, dt);
-    for (int i = 0; i < 3; i++) {
-      MoveEnemy(&enemies[i], dt);
+    if (!collided) {
+      ControlHero(&scarfy, dt);
+      for (int i = 0; i < Config::max_enemies; i++) {
+        MoveObject(&enemies[i], dt);
+      }
+      for (int bg = 0; bg < 2; bg++) {
+        AnimateBackground(&foregrounds[bg], dt);
+      }
+      for (int bg = 0; bg < 2; bg++) {
+        AnimateBackground(&middlegrounds[bg], dt);
+      }
+      for (int bg = 0; bg < 2; bg++) {
+        AnimateBackground(&backgrounds[bg], dt);
+      }
     }
-    for (int bg = 0; bg < 2; bg++) {
-      AnimateBackground(&foregrounds[bg], dt);
-    }
-    for (int bg = 0; bg < 2; bg++) {
-      AnimateBackground(&middlegrounds[bg], dt);
-    }
-    for (int bg = 0; bg < 2; bg++) {
-      AnimateBackground(&backgrounds[bg], dt);
+    // Update finish line to move along with the last enemy
+    finish_line += enemies[0].velocity * dt;
+
+    // Check Collisions
+    float pad{20.0f};
+    Rectangle scarfy_rec{scarfy.pos.x + pad, scarfy.pos.y,
+                         scarfy.rec.width - 2 * pad, scarfy.rec.height};
+    for (AnimData enemy : enemies) {
+      if (enemy.pos.x >= 0 && enemy.pos.x <= Config::window_width) {
+        Rectangle enemy_rec{enemy.pos.x + pad, enemy.pos.y + pad,
+                            enemy.rec.width - 2 * pad,
+                            enemy.rec.height - 2 * pad};
+
+        if (CheckCollisionRecs(scarfy_rec, enemy_rec)) {
+          collided = true;
+        }
+      }
     }
 
     // Draw Textures
     DrawBgs(backgrounds);
     DrawBgs(middlegrounds);
     DrawBgs(foregrounds);
-    scarfy.draw();
-    for (int i = 0; i < 3; i++) {
-      enemies[i].draw();
+    if (!collided) {
+      DrawRectangleRec(scarfy_rec, RED);
+      scarfy.draw();
+      for (int i = 0; i < Config::max_enemies; i++) {
+        // DrawRectangle(enemies[i].pos.x, enemies[i].pos.y,
+        // enemies[i].rec.width,
+        //               enemies[i].rec.height, RED);
+        enemies[i].draw();
+      }
+    } else {
+      DrawText("Game Over",
+               Config::window_width / 2 - MeasureText("Game Over", 40) / 2,
+               Config::window_height / 2, 40, RED);
+    }
+
+    if (scarfy.pos.x >= finish_line) {
+      DrawText("You Win",
+               Config::window_width / 2 - MeasureText("You Win", 40) / 2,
+               Config::window_height / 2, 40, RED);
+      scarfy.velocity = 200.0f;
+      if (IsTouchingTheGround(&scarfy)) {
+        MoveObject(&scarfy, dt);
+      }
     }
 
     // Update Times
     scarfy.running_time += dt;
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < Config::max_enemies; i++) {
       enemies[i].running_time += dt;
     }
 
@@ -218,7 +260,7 @@ void GameLoop() {
     if (IsTouchingTheGround(&scarfy)) {
       scarfy.next_frame();
     }
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < Config::max_enemies; i++) {
       enemies[i].next_frame();
     }
 
@@ -229,7 +271,7 @@ void GameLoop() {
 
   // Unload Textures
   UnloadTexture(scarfy.texture);
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < Config::max_enemies; i++) {
     UnloadTexture(enemies[i].texture);
   }
   for (int bg = 0; bg < 2; bg++) {
