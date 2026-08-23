@@ -44,7 +44,7 @@ AnimData InitializeScarfy() {
   data.rec.width = data.texture.width / data.max_frames;
   data.rec.height = data.texture.height;
   data.pos.x = Config::window_width / 2 - data.rec.width / 2;
-  data.pos.y = Config::window_height - data.rec.height;
+  data.pos.y = Config::window_height - data.rec.height - 20;
   data.update_time = 1.0f / 12.0f;
 
   return data;
@@ -59,7 +59,7 @@ AnimData InitializeEnemy(int x_offset) {
   data.rec.width = data.texture.width / data.max_frames;
   data.rec.height = data.texture.height / 8;
   data.pos.x = Config::window_width + x_offset;
-  data.pos.y = Config::window_height - data.rec.height;
+  data.pos.y = Config::window_height - data.rec.height - 20;
   data.update_time = 1.0f / 30.0f;
   data.velocity = -300;
 
@@ -130,7 +130,7 @@ void DrawWindow() {
 }
 
 bool IsTouchingTheGround(AnimData *hero) {
-  if (hero->pos.y >= Config::window_height - hero->rec.height) {
+  if (hero->pos.y >= Config::window_height - hero->rec.height - 20) {
     return true;
   }
 
