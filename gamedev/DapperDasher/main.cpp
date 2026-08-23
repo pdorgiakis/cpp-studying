@@ -161,8 +161,11 @@ void MoveEnemy(AnimData *enemy, float delta_time) {
 
 void GameLoop() {
   AnimData scarfy = InitializeScarfy();
-  AnimData enemy = InitializeEnemy(0);
-  AnimData enemy2 = InitializeEnemy(300);
+  AnimData enemies[3];
+  enemies[0] = InitializeEnemy(0);
+  enemies[1] = InitializeEnemy(200);
+  enemies[2] = InitializeEnemy(500);
+
   AnimData first_level_background[3];
   first_level_background[0] = InitializeFirstLevelBackground();
   first_level_background[1] =
@@ -186,8 +189,9 @@ void GameLoop() {
 
     // Handle Objects movement
     ControlHero(&scarfy, dt);
-    MoveEnemy(&enemy, dt);
-    MoveEnemy(&enemy2, dt);
+    for (int i = 0; i < 3; i++) {
+      MoveEnemy(&enemies[i], dt);
+    }
     for (int bg = 0; bg < 2; bg++) {
       AnimateBackground(&first_level_background[bg], dt);
     }
@@ -203,26 +207,34 @@ void GameLoop() {
     DrawBgs(second_level_background);
     DrawBgs(first_level_background);
     scarfy.draw();
-    enemy.draw();
-    enemy2.draw();
+    for (int i = 0; i < 3; i++) {
+      enemies[i].draw();
+    }
 
     // Update Times
     scarfy.running_time += dt;
-    enemy.running_time += dt;
-    enemy2.running_time += dt;
+    for (int i = 0; i < 3; i++) {
+      enemies[i].running_time += dt;
+    }
 
     // Animate
     if (IsTouchingTheGround(&scarfy)) {
       scarfy.next_frame();
     }
-    enemy.next_frame();
-    enemy2.next_frame();
+    for (int i = 0; i < 3; i++) {
+      enemies[i].next_frame();
+    }
 
     // Stop Drawing
     EndDrawing();
   }
   CloseWindow();
+
+  // Unload Textures
   UnloadTexture(scarfy.texture);
+  for (int i = 0; i < 3; i++) {
+    UnloadTexture(enemies[i].texture);
+  }
   for (int bg = 0; bg < 2; bg++) {
     UnloadTexture(first_level_background[bg].texture);
   }
