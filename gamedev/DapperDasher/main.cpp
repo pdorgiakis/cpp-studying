@@ -4,9 +4,9 @@
 struct Config {
   static const int window_width{512}, window_height{380};
   // pixels per second per second
-  static const int gravity{1000};
+  static const int gravity{1200};
   // pixels per second
-  static const int scarfy_jump_velocity{-500};
+  static const int scarfy_jump_velocity{-600};
 };
 
 struct AnimData {
@@ -43,7 +43,7 @@ AnimData InitializeScarfy() {
   data.rec.y = data.initial_frame_pos.y;
   data.rec.width = data.texture.width / data.max_frames;
   data.rec.height = data.texture.height;
-  data.pos.x = Config::window_width / 2 - data.rec.width / 2;
+  data.pos.x = Config::window_width / 3 - data.rec.width / 2;
   data.pos.y = Config::window_height - data.rec.height - 20;
   data.update_time = 1.0f / 12.0f;
 
@@ -61,7 +61,7 @@ AnimData InitializeEnemy(int x_offset) {
   data.pos.x = Config::window_width + x_offset;
   data.pos.y = Config::window_height - data.rec.height - 20;
   data.update_time = 1.0f / 30.0f;
-  data.velocity = -300;
+  data.velocity = -350;
 
   return data;
 }
