@@ -1,6 +1,7 @@
 #include "character.h"
 #include "config.cpp"
 #include "raylib.h"
+#include "raymath.h"
 #include <iostream>
 
 void SetupWindow() {
@@ -24,6 +25,10 @@ void GameLoop() {
     BeginDrawing();
     ClearBackground(WHITE);
     // Logic Start
+    // // Set World Bounds
+    knight.SetWorldPosition(
+        Vector2Clamp(knight.GetWorldPosition(), min_map_limit, max_map_limit));
+
     // Draw map
     DrawTextureEx(map_texture, knight.GetWorldPosition(), 0.0f,
                   Config::map_scale, WHITE);
