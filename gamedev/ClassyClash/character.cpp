@@ -5,11 +5,11 @@
 #include "raymath.h"
 
 Character::Character() {
-  width = (float)texture.width / max_frames;
+  width = static_cast<float>(texture.width) / max_frames;
   height = texture.height;
-  screen_position = {((float)Config::window_width / 2.0f) -
+  screen_position = {(static_cast<float>(Config::window_width) / 2.0f) -
                          Config::map_scale * (0.5f * width),
-                     ((float)Config::window_height / 2.0f) -
+                     (static_cast<float>(Config::window_height) / 2.0f) -
                          Config::map_scale * (0.5f * height)};
 }
 
@@ -52,13 +52,15 @@ void Character::Tick(float delta_time) {
       frame = 0;
   }
 
-  Rectangle char_source_rectangle = {frame * (float)texture.width / 6, 0,
-                                     char_rotation * width, height};
+  Rectangle char_source_rectangle = {frame * static_cast<float>(texture.width) /
+                                         6,
+                                     0, char_rotation * width, height};
 
   Rectangle char_dest_rectangle = {screen_position.x, screen_position.y,
                                    Config::map_scale * width, height * 4.0f};
   // Update frame
-  char_source_rectangle.x = (float)frame * (float)texture.width / 6.0f;
+  char_source_rectangle.x =
+      static_cast<float>(frame * static_cast<float>(texture.width) / 6.0f);
   // Draw
   DrawTexturePro(texture, char_source_rectangle, char_dest_rectangle, Vector2{},
                  char_rotation, WHITE);
