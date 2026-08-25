@@ -4,7 +4,7 @@ class Character {
 public:
   Character();
   Vector2 GetWorldPosition() { return world_position; }
-  void SetScreenPosition();
+  void SetWorldPosition(Vector2 position) { world_position = position; }
   void Tick(float delta_time);
 
 private:

@@ -7,12 +7,10 @@
 Character::Character() {
   width = (float)texture.width / max_frames;
   height = texture.height;
-}
-
-void Character::SetScreenPosition() {
-  screen_position = {
-      ((float)Config::window_width / 2.0f) - 4.0f * (0.5f * width),
-      ((float)Config::window_height / 2.0f) - 4.0f * (0.5f * height)};
+  screen_position = {((float)Config::window_width / 2.0f) -
+                         Config::map_scale * (0.5f * width),
+                     ((float)Config::window_height / 2.0f) -
+                         Config::map_scale * (0.5f * height)};
 }
 
 void Character::Tick(float delta_time) {
@@ -30,9 +28,9 @@ void Character::Tick(float delta_time) {
     world_position =
         Vector2Add(world_position, Vector2Scale(direction, movement_speed));
 
-    // world_position = Vector2Clamp(world_position, min_map_limit,
-    // max_map_limit);
-
+    // We don't use ternary because if the character moves up or down the x
+    // results to 0 and the direction changes. We want the direction to change
+    // only when the character "turns"
     if (direction.x > 0.f) {
       char_rotation = -1.f;
     } else if (direction.x < 0.f) {
@@ -44,7 +42,7 @@ void Character::Tick(float delta_time) {
     texture = idle;
   }
 
-  // Animation
+  // Animate
   running_time += delta_time;
   if (update_time < running_time) {
     frame++;
@@ -54,14 +52,14 @@ void Character::Tick(float delta_time) {
       frame = 0;
   }
 
-  SetScreenPosition();
   Rectangle char_source_rectangle = {frame * (float)texture.width / 6, 0,
                                      char_rotation * width, height};
 
   Rectangle char_dest_rectangle = {screen_position.x, screen_position.y,
-                                   4.0f * width, height * 4.0f};
-
+                                   Config::map_scale * width, height * 4.0f};
+  // Update frame
   char_source_rectangle.x = (float)frame * (float)texture.width / 6.0f;
+  // Draw
   DrawTexturePro(texture, char_source_rectangle, char_dest_rectangle, Vector2{},
                  char_rotation, WHITE);
 }
