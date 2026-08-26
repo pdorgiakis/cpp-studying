@@ -1,5 +1,6 @@
 #include "character.h"
 #include "config.cpp"
+#include "prop.h"
 #include "raylib.h"
 #include "raymath.h"
 #include <iostream>
@@ -21,6 +22,12 @@ void GameLoop() {
   // Character Data
   Character knight;
 
+  // Props
+  Texture2D bush_texture = LoadTexture("./textures/nature_tileset/Bush.png");
+  Vector2 world_position = {0, 0};
+  // {Config::map_scale * map_texture.width / 2,
+  //                         Config::map_scale * map_texture.height / 2};
+  Prop bush = {world_position, bush_texture};
   while (!WindowShouldClose()) {
     BeginDrawing();
     ClearBackground(WHITE);
@@ -34,6 +41,9 @@ void GameLoop() {
                   Config::map_scale, WHITE);
     // Tick Hero
     knight.Tick(GetFrameTime());
+
+    // Render Props
+    bush.Render(knight.GetWorldPosition());
 
     // Logic End
     EndDrawing();
