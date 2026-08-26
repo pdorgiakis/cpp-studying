@@ -24,10 +24,12 @@ void GameLoop() {
 
   // Props
   Texture2D bush_texture = LoadTexture("./textures/nature_tileset/Bush.png");
+  Texture2D rock_texture = LoadTexture("./textures/nature_tileset/Rock.png");
   Vector2 world_position = {0, 0};
-  // {Config::map_scale * map_texture.width / 2,
-  //                         Config::map_scale * map_texture.height / 2};
-  Prop bush = {world_position, bush_texture};
+
+  Prop props[2]{Prop{Vector2{600.f, 300.f}, bush_texture},
+                Prop{Vector2{300.f, 600.f}, rock_texture}};
+
   while (!WindowShouldClose()) {
     BeginDrawing();
     ClearBackground(WHITE);
@@ -43,7 +45,9 @@ void GameLoop() {
     knight.Tick(GetFrameTime());
 
     // Render Props
-    bush.Render(knight.GetWorldPosition());
+    for (Prop prop : props) {
+      prop.Render(knight.GetWorldPosition());
+    }
 
     // Logic End
     EndDrawing();
