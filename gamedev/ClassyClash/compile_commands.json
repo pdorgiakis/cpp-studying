@@ -46,5 +46,21 @@
     ],
     "directory": "/Users/pdorgiakis/Documents/cpp/gamedev/ClassyClash",
     "output": "main"
+  },
+  {
+    "file": "./prop.cpp",
+    "arguments": [
+      "g++",
+      "./prop.cpp",
+      "-o",
+      "main",
+      "-I/opt/homebrew/opt/raylib/include",
+      "-framework",
+      "-framework",
+      "-framework",
+      "-framework"
+    ],
+    "directory": "/Users/pdorgiakis/Documents/cpp/gamedev/ClassyClash",
+    "output": "main"
   }
 ]
