@@ -8,9 +8,9 @@ Character::Character() {
   width = static_cast<float>(texture.width) / max_frames;
   height = texture.height;
   screen_position = {(static_cast<float>(Config::window_width) / 2.0f) -
-                         Config::map_scale * (0.5f * width),
+                         scale * (0.5f * width),
                      (static_cast<float>(Config::window_height) / 2.0f) -
-                         Config::map_scale * (0.5f * height)};
+                         scale * (0.5f * height)};
 }
 
 void Character::Tick(float delta_time) {
@@ -57,7 +57,7 @@ void Character::Tick(float delta_time) {
                                      0, char_rotation * width, height};
 
   Rectangle char_dest_rectangle = {screen_position.x, screen_position.y,
-                                   Config::map_scale * width, height * 4.0f};
+                                   scale * width, height * 4.0f};
   // Update frame
   char_source_rectangle.x =
       static_cast<float>(frame * static_cast<float>(texture.width) / 6.0f);
