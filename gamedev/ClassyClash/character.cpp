@@ -3,6 +3,7 @@
 #include "config.cpp"
 #include "raylib.h"
 #include "raymath.h"
+#include <string>
 
 Character::Character() {
   width = static_cast<float>(texture.width) / max_frames;
@@ -25,6 +26,7 @@ void Character::Tick(float delta_time) {
     direction.y -= 1;
 
   if (Vector2Length(direction) != 0) {
+    previous_position = world_position;
     world_position =
         Vector2Add(world_position, Vector2Scale(direction, movement_speed));
 
@@ -42,6 +44,11 @@ void Character::Tick(float delta_time) {
     texture = idle;
   }
 
+  collision_rec = {screen_position.x + padding.x * scale,
+                   screen_position.y + padding.y * scale,
+                   (width - padding.x * 2) * scale,
+                   (height - padding.y) * scale};
+
   // Animate
   running_time += delta_time;
   if (update_time < running_time) {
@@ -57,11 +64,13 @@ void Character::Tick(float delta_time) {
                                      0, char_rotation * width, height};
 
   Rectangle char_dest_rectangle = {screen_position.x, screen_position.y,
-                                   scale * width, height * 4.0f};
+                                   scale * width, height * scale};
   // Update frame
   char_source_rectangle.x =
       static_cast<float>(frame * static_cast<float>(texture.width) / 6.0f);
+
   // Draw
   DrawTexturePro(texture, char_source_rectangle, char_dest_rectangle, Vector2{},
                  char_rotation, WHITE);
+  // DrawRectangleRec(collision_rec, RED);
 }

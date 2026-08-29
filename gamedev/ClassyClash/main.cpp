@@ -1,8 +1,9 @@
 #include "character.h"
 #include "config.cpp"
-#include "prop.h"
 #include "raylib.h"
 #include "raymath.h"
+#include "rock.h"
+#include "tree.h"
 #include <iostream>
 
 void SetupWindow() {
@@ -27,8 +28,7 @@ void GameLoop() {
   Texture2D rock_texture = LoadTexture("./textures/nature_tileset/Rock.png");
   Vector2 world_position = {0, 0};
 
-  Prop props[2]{Prop{Vector2{600.f, 300.f}, bush_texture},
-                Prop{Vector2{300.f, 600.f}, rock_texture}};
+  Prop props[2]{Tree{Vector2{600.f, 300.f}}, Rock{Vector2{300.f, 600.f}}};
 
   while (!WindowShouldClose()) {
     BeginDrawing();
@@ -45,8 +45,13 @@ void GameLoop() {
     knight.Tick(GetFrameTime());
 
     // Render Props
-    for (Prop prop : props) {
+    for (auto prop : props) {
       prop.Render(knight.GetWorldPosition());
+
+      bool collided =
+          CheckCollisionRecs(prop.GetCollisionRec(), knight.GetCollisionRec());
+      if (collided)
+        knight.UndoMovement();
     }
 
     // Logic End
