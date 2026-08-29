@@ -1,5 +1,6 @@
+#include "base_character.h"
 #include "raylib.h"
-class Character {
+class Character : public BaseCharacter {
 public:
   Character();
   Vector2 GetWorldPosition() { return world_position; }
