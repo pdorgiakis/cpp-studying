@@ -1,9 +1,9 @@
-#include "character.h"
 #include "config.cpp"
+#include "includes/character.h"
+#include "includes/rock.h"
+#include "includes/tree.h"
 #include "raylib.h"
 #include "raymath.h"
-#include "rock.h"
-#include "tree.h"
 #include <iostream>
 
 void SetupWindow() {
