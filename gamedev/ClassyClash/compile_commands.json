@@ -62,5 +62,21 @@
     ],
     "directory": "/Users/pdorgiakis/Documents/cpp/gamedev/ClassyClash",
     "output": "main"
+  },
+  {
+    "file": "./enemy.cpp",
+    "arguments": [
+      "g++",
+      "./enemy.cpp",
+      "-o",
+      "main",
+      "-I/opt/homebrew/opt/raylib/include",
+      "-framework",
+      "-framework",
+      "-framework",
+      "-framework"
+    ],
+    "directory": "/Users/pdorgiakis/Documents/cpp/gamedev/ClassyClash",
+    "output": "main"
   }
 ]

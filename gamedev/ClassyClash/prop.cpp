@@ -15,5 +15,5 @@ void Prop::Render(Vector2 character_position) {
                    texture.height * scale - padding.y * scale};
 
   DrawTextureEx(texture, screen_position, 0.0f, scale, WHITE);
-  // DrawRectangleRec(collision_rec, RED);
+  DrawRectangleRec(collision_rec, RED);
 }

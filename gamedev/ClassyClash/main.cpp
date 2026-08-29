@@ -1,5 +1,6 @@
 #include "config.cpp"
 #include "includes/character.h"
+#include "includes/enemy.h"
 #include "includes/rock.h"
 #include "includes/tree.h"
 #include "raylib.h"
@@ -23,11 +24,10 @@ void GameLoop() {
   // Character Data
   Character knight;
 
-  // Props
-  Texture2D bush_texture = LoadTexture("./textures/nature_tileset/Bush.png");
-  Texture2D rock_texture = LoadTexture("./textures/nature_tileset/Rock.png");
-  Vector2 world_position = {0, 0};
+  // Enemy Data
+  Enemy goblin{Vector2{350.f, 300.f}};
 
+  // Props
   Prop props[2]{Tree{Vector2{600.f, 300.f}}, Rock{Vector2{300.f, 600.f}}};
 
   while (!WindowShouldClose()) {
@@ -42,7 +42,9 @@ void GameLoop() {
     DrawTextureEx(map_texture, knight.GetWorldPosition(), 0.0f,
                   Config::map_scale, WHITE);
     // Tick Hero
-    knight.Tick(GetFrameTime());
+    float delta_time = GetFrameTime();
+    knight.Tick(delta_time);
+    goblin.Tick(delta_time, knight.GetWorldPosition());
 
     // Render Props
     for (auto prop : props) {
