@@ -7,7 +7,7 @@ class BaseCharacter {
 public:
   BaseCharacter();
   Vector2 GetWorldPosition() { return world_position; }
-  Vector2 GetScreenPosition() { return screen_position; }
+  virtual Vector2 GetScreenPosition() = 0;
   Rectangle GetCollisionRec() { return collision_rec; }
   void SetWorldPosition(Vector2 position) { world_position = position; }
   void UndoMovement() { world_position = previous_position; }
@@ -19,7 +19,6 @@ protected:
   Texture2D texture{};
   Vector2 previous_position{};
   Vector2 world_position{};
-  Vector2 screen_position{};
   Vector2 padding{};
   Rectangle collision_rec{};
 

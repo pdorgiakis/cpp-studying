@@ -20,7 +20,8 @@ Enemy::Enemy(Vector2 position) {
 void Enemy::Tick(float delta_time) {
 
   if (target != nullptr) {
-    if (Vector2Distance(target->GetScreenPosition(), screen_position) <= 300)
+    if (Vector2Distance(target->GetScreenPosition(), GetScreenPosition()) <=
+        300)
       aggroed = true;
     else
       aggroed = false;
@@ -30,12 +31,15 @@ void Enemy::Tick(float delta_time) {
     texture = run;
 
     Vector2 towards_target = Vector2Normalize(
-        Vector2Subtract(target->GetScreenPosition(), screen_position));
+        Vector2Subtract(target->GetScreenPosition(), GetScreenPosition()));
 
     world_position = Vector2Add(world_position,
                                 Vector2Scale(towards_target, movement_speed));
   }
-  screen_position = Vector2Add(world_position, target->GetWorldPosition());
 
   BaseCharacter::Tick(delta_time);
+}
+
+Vector2 Enemy::GetScreenPosition() {
+  return Vector2Add(world_position, target->GetWorldPosition());
 }

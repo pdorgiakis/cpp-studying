@@ -11,6 +11,7 @@ public:
   Enemy(Vector2 position);
   virtual void Tick(float delta_time) override;
   void SetTarget(Character *character) { target = character; }
+  virtual Vector2 GetScreenPosition() override;
 
 private:
   Character *target;

@@ -13,10 +13,6 @@ Character::Character() {
   padding = {4, 9};
   width = static_cast<float>(texture.width) / max_frames;
   height = texture.height;
-  screen_position = {(static_cast<float>(Config::window_width) / 2.0f) -
-                         scale * (0.5f * width),
-                     (static_cast<float>(Config::window_height) / 2.0f) -
-                         scale * (0.5f * height)};
 }
 
 void Character::Tick(float delta_time) {
@@ -49,4 +45,11 @@ void Character::Tick(float delta_time) {
   } else {
     texture = idle;
   }
+}
+
+Vector2 Character::GetScreenPosition() {
+  return Vector2{(static_cast<float>(Config::window_width) / 2.0f) -
+                     scale * (0.5f * width),
+                 (static_cast<float>(Config::window_height) / 2.0f) -
+                     scale * (0.5f * height)};
 }

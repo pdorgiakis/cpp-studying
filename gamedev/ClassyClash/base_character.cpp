@@ -6,8 +6,8 @@ void BaseCharacter::Tick(float delta_time) {
   previous_position = world_position;
 
   // Calculate collision rectangle
-  collision_rec = {screen_position.x + padding.x * scale,
-                   screen_position.y + padding.y * scale,
+  collision_rec = {GetScreenPosition().x + padding.x * scale,
+                   GetScreenPosition().y + padding.y * scale,
                    (width - padding.x * 2) * scale,
                    (height - padding.y) * scale};
 
@@ -25,7 +25,7 @@ void BaseCharacter::Tick(float delta_time) {
   Rectangle source_rectangle = {frame * width, 0, char_rotation * width,
                                 height};
 
-  Rectangle dest_rectangle = {screen_position.x, screen_position.y,
+  Rectangle dest_rectangle = {GetScreenPosition().x, GetScreenPosition().y,
                               scale * width, height * scale};
   DrawTexturePro(texture, source_rectangle, dest_rectangle, Vector2{},
                  char_rotation, WHITE);
