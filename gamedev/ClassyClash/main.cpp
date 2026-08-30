@@ -44,7 +44,9 @@ void GameLoop() {
     // Tick Hero
     float delta_time = GetFrameTime();
     knight.Tick(delta_time);
-    goblin.Tick(delta_time, knight.GetWorldPosition());
+    // Tick Enemy
+    goblin.SetScreenPosition(knight.GetWorldPosition());
+    goblin.Tick(delta_time);
 
     // Render Props
     for (auto prop : props) {
