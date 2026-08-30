@@ -1,3 +1,5 @@
+#pragma once
+#ifndef CHARACTER_H
 #include "base_character.h"
 #include "raylib.h"
 
@@ -6,3 +8,4 @@ public:
   Character();
   virtual void Tick(float delta_time) override;
 };
+#endif

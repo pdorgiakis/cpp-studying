@@ -26,6 +26,7 @@ void GameLoop() {
 
   // Enemy Data
   Enemy goblin{Vector2{350.f, 300.f}};
+  goblin.SetTarget(&knight);
 
   // Props
   Prop props[2]{Tree{Vector2{600.f, 300.f}}, Rock{Vector2{300.f, 600.f}}};
@@ -45,7 +46,6 @@ void GameLoop() {
     float delta_time = GetFrameTime();
     knight.Tick(delta_time);
     // Tick Enemy
-    goblin.SetScreenPosition(knight.GetWorldPosition());
     goblin.Tick(delta_time);
 
     // Render Props

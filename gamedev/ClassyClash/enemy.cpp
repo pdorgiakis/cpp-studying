@@ -3,6 +3,7 @@
 #include "includes/base_character.h"
 #include "raylib.h"
 #include "raymath.h"
+#include <iostream>
 #include <string>
 
 Enemy::Enemy(Vector2 position) {
@@ -11,13 +12,30 @@ Enemy::Enemy(Vector2 position) {
   run = LoadTexture("./textures/characters/goblin_run_spritesheet.png");
   texture = idle;
   padding = {4, 3};
-  movement_speed = 6.0f;
+  movement_speed = 3.0f;
   width = static_cast<float>(texture.width) / max_frames;
   height = texture.height;
 }
 
-void Enemy::Tick(float delta_time) { BaseCharacter::Tick(delta_time); }
+void Enemy::Tick(float delta_time) {
 
-void Enemy::SetScreenPosition(Vector2 character_position) {
-  screen_position = Vector2Add(world_position, character_position);
+  if (target != nullptr) {
+    if (Vector2Distance(target->GetScreenPosition(), screen_position) <= 300)
+      aggroed = true;
+    else
+      aggroed = false;
+  }
+
+  if (aggroed) {
+    texture = run;
+
+    Vector2 towards_target = Vector2Normalize(
+        Vector2Subtract(target->GetScreenPosition(), screen_position));
+
+    world_position = Vector2Add(world_position,
+                                Vector2Scale(towards_target, movement_speed));
+  }
+  screen_position = Vector2Add(world_position, target->GetWorldPosition());
+
+  BaseCharacter::Tick(delta_time);
 }

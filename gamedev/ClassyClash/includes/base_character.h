@@ -7,6 +7,7 @@ class BaseCharacter {
 public:
   BaseCharacter();
   Vector2 GetWorldPosition() { return world_position; }
+  Vector2 GetScreenPosition() { return screen_position; }
   Rectangle GetCollisionRec() { return collision_rec; }
   void SetWorldPosition(Vector2 position) { world_position = position; }
   void UndoMovement() { world_position = previous_position; }
