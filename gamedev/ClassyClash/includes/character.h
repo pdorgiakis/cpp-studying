@@ -8,5 +8,14 @@ public:
   Character();
   virtual void Tick(float delta_time) override;
   virtual Vector2 GetScreenPosition() override;
+
+private:
+  bool MovingLeft();
+  bool MovingRight();
+  void DrawWeapon();
+  Texture2D weapon{};
+  Rectangle weapon_collision_rec{};
+  float weapon_width{0.f};
+  float weapon_height{0.f};
 };
 #endif
