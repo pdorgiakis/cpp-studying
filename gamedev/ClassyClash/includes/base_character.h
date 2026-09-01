@@ -12,6 +12,7 @@ public:
   void SetWorldPosition(Vector2 position) { world_position = position; }
   void UndoMovement() { world_position = previous_position; }
   virtual void Tick(float delta_time);
+  void SetIsAlive(bool alive) { is_alive = alive; }
 
 protected:
   Texture2D idle{};
@@ -33,5 +34,6 @@ protected:
   int frame{};
   float width{};
   float height{};
+  bool is_alive{true};
 };
 #endif
