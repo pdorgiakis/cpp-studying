@@ -16,11 +16,17 @@ Character::Character() {
   height = texture.height;
   weapon_width = weapon.width * scale;
   weapon_height = weapon.height * scale;
+  max_health = 100.f;
+  current_health = max_health;
+  invulnerability_time = 1.0f;
 }
 
 void Character::Tick(float delta_time) {
   if (!is_alive) {
     return;
+  }
+  if (current_health <= 0) {
+    is_alive = false;
   }
 
   Vector2 direction{};
@@ -103,10 +109,9 @@ void Character::DrawWeapon() {
 
   DrawTexturePro(weapon, weapon_source_rec, weapon_dest_rec, origin, rotation,
                  WHITE);
-  DrawRectangleLines(weapon_collision_rec.x, weapon_collision_rec.y,
-                     weapon_collision_rec.width, weapon_collision_rec.height,
-                     RED);
-  // DrawRectanglePro(weapon_dest_rec, origin, 0.f, RED);
+  // DrawRectangleLines(weapon_collision_rec.x, weapon_collision_rec.y,
+  //                    weapon_collision_rec.width, weapon_collision_rec.height,
+  //                    RED);
 }
 
 bool Character::MovingRight() {
@@ -121,4 +126,13 @@ bool Character::MovingLeft() {
     return true;
   }
   return false;
+}
+
+void Character::Hit(float damage) {
+  if (invulnerability_time >= time_since_last_hit) {
+    return;
+  }
+
+  current_health -= damage;
+  time_since_last_hit = 0.f;
 }

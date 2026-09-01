@@ -13,6 +13,8 @@ public:
   void UndoMovement() { world_position = previous_position; }
   virtual void Tick(float delta_time);
   void SetIsAlive(bool alive) { is_alive = alive; }
+  virtual void Hit(float damage);
+  float GetDamageDealt() { return damage; }
 
 protected:
   Texture2D idle{};
@@ -35,5 +37,10 @@ protected:
   float width{};
   float height{};
   bool is_alive{true};
+  float max_health;
+  float current_health;
+  float damage{10.f};
+  float invulnerability_time{0.f};
+  float time_since_last_hit{0.f};
 };
 #endif

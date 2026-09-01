@@ -15,14 +15,17 @@ Enemy::Enemy(Vector2 position) {
   movement_speed = 2.0f;
   width = static_cast<float>(texture.width) / max_frames;
   height = texture.height;
+  max_health = 20.f;
+  current_health = max_health;
 }
 
 void Enemy::Tick(float delta_time) {
-
   if (!is_alive) {
     return;
   }
-
+  if (current_health <= 0) {
+    is_alive = false;
+  }
   if (target != nullptr) {
     if (Vector2Distance(target->GetScreenPosition(), GetScreenPosition()) <=
         300)

@@ -61,8 +61,13 @@ void GameLoop() {
       bool hit = CheckCollisionRecs(goblin.GetCollisionRec(),
                                     knight.GetWeaponCollisionRec());
       if (hit) {
-        goblin.SetIsAlive(false);
+        goblin.Hit(knight.GetDamageDealt());
       }
+    }
+
+    if (CheckCollisionRecs(goblin.GetCollisionRec(),
+                           knight.GetCollisionRec())) {
+      knight.Hit(goblin.GetDamageDealt());
     }
 
     // Logic End
