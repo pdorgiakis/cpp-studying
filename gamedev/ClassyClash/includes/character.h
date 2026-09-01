@@ -8,6 +8,7 @@ public:
   Character();
   virtual void Tick(float delta_time) override;
   virtual Vector2 GetScreenPosition() override;
+  Rectangle GetWeaponCollisionRec() { return weapon_collision_rec; }
 
 private:
   bool MovingLeft();

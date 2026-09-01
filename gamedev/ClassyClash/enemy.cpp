@@ -12,12 +12,16 @@ Enemy::Enemy(Vector2 position) {
   run = LoadTexture("./textures/characters/goblin_run_spritesheet.png");
   texture = idle;
   padding = {4, 3};
-  movement_speed = 3.0f;
+  movement_speed = 2.0f;
   width = static_cast<float>(texture.width) / max_frames;
   height = texture.height;
 }
 
 void Enemy::Tick(float delta_time) {
+
+  if (!is_alive) {
+    return;
+  }
 
   if (target != nullptr) {
     if (Vector2Distance(target->GetScreenPosition(), GetScreenPosition()) <=

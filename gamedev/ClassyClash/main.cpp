@@ -57,6 +57,13 @@ void GameLoop() {
       if (collided)
         knight.UndoMovement();
     }
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+      bool hit = CheckCollisionRecs(goblin.GetCollisionRec(),
+                                    knight.GetWeaponCollisionRec());
+      if (hit) {
+        goblin.SetIsAlive(false);
+      }
+    }
 
     // Logic End
     EndDrawing();

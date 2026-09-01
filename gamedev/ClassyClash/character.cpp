@@ -19,6 +19,9 @@ Character::Character() {
 }
 
 void Character::Tick(float delta_time) {
+  if (!is_alive) {
+    return;
+  }
 
   Vector2 direction{};
   if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
@@ -79,7 +82,8 @@ void Character::DrawWeapon() {
                             GetScreenPosition().y + offset.y + height -
                                 weapon_height,
                             weapon_width, weapon_height};
-    rotation = 35.f;
+
+    rotation = IsMouseButtonDown(MOUSE_LEFT_BUTTON) ? 35.f : 0;
   } else if (MovingLeft()) {
     origin = {weapon_width, weapon_height};
     offset = {12.f, 40.f};
@@ -87,7 +91,7 @@ void Character::DrawWeapon() {
         GetScreenPosition().x + width + offset.x - weapon_width,
         GetScreenPosition().y + offset.y + height - weapon_height, weapon_width,
         weapon_height};
-    rotation = -35.f;
+    rotation = IsMouseButtonDown(MOUSE_LEFT_BUTTON) ? -35.f : 0;
   }
 
   Rectangle weapon_source_rec = {0, 0, char_rotation * weapon.width,
